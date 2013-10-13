@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.480.3</version>
+    </parent>
+
+    <groupId>com.github.wgreven.jenkins</groupId>
+    <artifactId>folder-environment-variables</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>hpi</packaging>
+
+    <name>Folder Environment Variables Plugin</name>
+
+    <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <scm>
+        <connection>scm:git:git://github.com/wgreven/folder-environment-variables-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com/wgreven/folder-environment-variables-plugin.git</developerConnection>
+        <url>http://github.com/wgreven/folder-environment-variables-plugin</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>cloudbees-folder</artifactId>
+            <version>4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>credentials</artifactId>
+            <version>1.8.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

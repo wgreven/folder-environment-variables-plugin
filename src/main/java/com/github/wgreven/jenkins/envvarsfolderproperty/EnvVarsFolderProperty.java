@@ -26,39 +26,33 @@ package com.github.wgreven.jenkins.envvarsfolderproperty;
 import com.cloudbees.hudson.plugins.folder.Folder;
 import com.cloudbees.hudson.plugins.folder.FolderProperty;
 import com.cloudbees.hudson.plugins.folder.FolderPropertyDescriptor;
+import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.EnvironmentContributor;
+import hudson.model.ItemGroup;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Folder property which adds environment variables to a folder.
  */
 public class EnvVarsFolderProperty extends FolderProperty<Folder> {
 
-    private String properties;
+    public final String properties;
+
     private transient Map<String, String> propertyMap;
 
     @DataBoundConstructor
-    public EnvVarsFolderProperty(String properties) throws IOException {
-        setProperties(properties);
-    }
-
-    public String getProperties() {
-        return properties;
-    }
-
-    public void setProperties(String properties) {
+    public EnvVarsFolderProperty(String properties) {
         this.properties = properties;
-        this.propertyMap = null;
     }
 
-    public Map<String, String> getPropertyMap() throws IOException {
+    private Map<String, String> getPropertyMap() throws IOException {
         Map<String, String> result = propertyMap;
         if (result == null) {
             result = mapFromProperties(propertiesFromString(properties));
@@ -73,6 +67,35 @@ public class EnvVarsFolderProperty extends FolderProperty<Folder> {
         @Override
         public String getDisplayName() {
             return "Environment Variables";
+        }
+    }
+
+    /**
+     * Contributes environment variables set in folders to builds inside these folders.
+     */
+    @Extension
+    public static class EnvironmentContributorImpl extends EnvironmentContributor {
+
+        @Override
+        public void buildEnvironmentFor(Run run, EnvVars envVars, TaskListener taskListener) throws IOException, InterruptedException {
+            addFolderEnvironment(envVars, run.getParent().getParent());
+        }
+
+        private void addFolderEnvironment(EnvVars envVars, ItemGroup itemGroup) throws IOException, InterruptedException {
+            if (itemGroup instanceof Folder) {
+                Folder folder = (Folder) itemGroup;
+                addFolderEnvironment(envVars, folder.getParent());
+                envVars.putAll(getFolderEnvironment(folder));
+            }
+        }
+
+        private Map<String,String> getFolderEnvironment(Folder folder) throws IOException {
+            EnvVarsFolderProperty folderProperty = folder.getProperties().get(EnvVarsFolderProperty.class);
+            if (folderProperty != null) {
+                return folderProperty.getPropertyMap();
+            } else {
+                return Collections.emptyMap();
+            }
         }
     }
 

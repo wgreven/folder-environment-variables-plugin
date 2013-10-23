@@ -30,7 +30,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/wgreven/folder-environment-variables-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com/wgreven/folder-environment-variables-plugin.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:wgreven/folder-environment-variables-plugin.git</developerConnection>
         <url>http://github.com/wgreven/folder-environment-variables-plugin</url>
         <tag>HEAD</tag>
     </scm>

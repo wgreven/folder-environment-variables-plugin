@@ -8,7 +8,7 @@
 
     <groupId>com.github.wgreven.jenkins</groupId>
     <artifactId>folder-environment-variables</artifactId>
-    <version>0.3</version>
+    <version>0.4-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <name>Folder Environment Variables Plugin</name>

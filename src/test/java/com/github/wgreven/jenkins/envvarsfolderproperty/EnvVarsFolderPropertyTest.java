@@ -25,6 +25,7 @@
 package com.github.wgreven.jenkins.envvarsfolderproperty;
 
 import com.cloudbees.hudson.plugins.folder.Folder;
+import hudson.EnvVars;
 import hudson.model.*;
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,9 +47,7 @@ public class EnvVarsFolderPropertyTest {
         String env = "TEST_VAR=TEST_VALUE";
         folder.addProperty(new EnvVarsFolderProperty(env));
         FreeStyleProject project = folder.createProject(FreeStyleProject.class, "project");
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkinsRule.assertBuildStatusSuccess(build);
-        assertEquals("TEST_VALUE", build.getEnvironment(TaskListener.NULL).get("TEST_VAR"));
+        assertEquals("TEST_VALUE", project.getEnvironment(jenkinsRule.jenkins, TaskListener.NULL).get("TEST_VAR"));
     }
 
     @Test
@@ -58,9 +57,7 @@ public class EnvVarsFolderPropertyTest {
         folder1.addProperty(new EnvVarsFolderProperty(env));
         Folder folder2 = folder1.createProject(Folder.class, "folder2");
         FreeStyleProject project = folder2.createProject(FreeStyleProject.class, "project");
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkinsRule.assertBuildStatusSuccess(build);
-        assertEquals("TEST_VALUE", build.getEnvironment(TaskListener.NULL).get("TEST_VAR"));
+        assertEquals("TEST_VALUE", project.getEnvironment(jenkinsRule.jenkins, TaskListener.NULL).get("TEST_VAR"));
     }
 
     @Test
@@ -72,22 +69,6 @@ public class EnvVarsFolderPropertyTest {
         String env2 = "TEST_VAR=TEST_VALUE2";
         folder2.addProperty(new EnvVarsFolderProperty(env2));
         FreeStyleProject project = folder2.createProject(FreeStyleProject.class, "project");
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkinsRule.assertBuildStatusSuccess(build);
-        assertEquals("TEST_VALUE2", build.getEnvironment(TaskListener.NULL).get("TEST_VAR"));
+        assertEquals("TEST_VALUE2", project.getEnvironment(jenkinsRule.jenkins, TaskListener.NULL).get("TEST_VAR"));
     }
-
-    @Test
-    public void testEnvironmentProperty_nestedFolders_dependentProperty() throws Exception {
-        Folder folder1 = jenkinsRule.jenkins.createProject(Folder.class, "folder1");
-        String env1 = "TEST_VAR1=TEST_VALUE1";
-        folder1.addProperty(new EnvVarsFolderProperty(env1));
-        Folder folder2 = folder1.createProject(Folder.class, "folder2");
-        String env2 = "TEST_VAR2=${TEST_VAR1}";
-        folder2.addProperty(new EnvVarsFolderProperty(env2));
-        FreeStyleProject project = folder2.createProject(FreeStyleProject.class, "project");
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkinsRule.assertBuildStatusSuccess(build);
-        assertEquals("TEST_VALUE1", build.getEnvironment(TaskListener.NULL).get("TEST_VAR2"));
-   }
 }

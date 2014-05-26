@@ -28,10 +28,7 @@ import com.cloudbees.hudson.plugins.folder.FolderProperty;
 import com.cloudbees.hudson.plugins.folder.FolderPropertyDescriptor;
 import hudson.EnvVars;
 import hudson.Extension;
-import hudson.model.EnvironmentContributor;
-import hudson.model.ItemGroup;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.model.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -77,8 +74,8 @@ public class EnvVarsFolderProperty extends FolderProperty<Folder> {
     public static class EnvironmentContributorImpl extends EnvironmentContributor {
 
         @Override
-        public void buildEnvironmentFor(Run run, EnvVars envVars, TaskListener taskListener) throws IOException, InterruptedException {
-            addFolderEnvironment(envVars, run.getParent().getParent());
+        public void buildEnvironmentFor(Job job, EnvVars envVars, TaskListener taskListener) throws IOException, InterruptedException {
+            addFolderEnvironment(envVars, job.getParent());
         }
 
         private void addFolderEnvironment(EnvVars envVars, ItemGroup itemGroup) throws IOException, InterruptedException {
